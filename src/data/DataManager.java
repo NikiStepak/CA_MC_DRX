@@ -1,9 +1,10 @@
 package data;
 
 import javafx.scene.paint.Color;
-import data.BoundaryCondition;
 
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class DataManager {
@@ -14,9 +15,9 @@ public class DataManager {
     private Random random;
     private boolean condition;
     private Neighbours neighbours;
-    private Colors colors;
+    private final Colors colors;
     private BoundaryCondition boundaryCondition;
-    public List<Cell> list;
+    public ArrayList<Cell> list;
 
     private final String[] neighbourhood_tab = {"von NEUMANN", "PENTAGONAL - random", "HEXAGONAL - right",
             "HEXAGONAL - left", "HEXAGONAL - random", "MOORE", "with RADIUS"};
@@ -26,9 +27,10 @@ public class DataManager {
     // Constructor
     public DataManager() {
         boundaryCondition = new BoundaryCondition();
+        colors = new Colors();
     }
 
-    public DataManager(int xSize, int ySize, int rows, int columns, String neighbourhood, String condition, Double radius) {
+    public void DM1(int xSize, int ySize, int rows, int columns, String neighbourhood, String condition, Double radius) {
         setSize(xSize, ySize);
         set(rows * columns, neighbourhood, condition, radius);
 
@@ -38,7 +40,7 @@ public class DataManager {
         setCells();
     }
 
-    public DataManager(int xSize, int ySize, int amount, double radiusNu, String neighbourhood, String condition, Double radius) {
+    public void DM2(int xSize, int ySize, int amount, double radiusNu, String neighbourhood, String condition, Double radius) {
         setSize(xSize, ySize);
         set(amount, neighbourhood, condition, radius);
 
@@ -47,14 +49,14 @@ public class DataManager {
         setCellsRadius();
     }
 
-    public DataManager(int xSize, int ySize, int amount, String neighbourhood, String condition, Double radius) {
+    public void DM3(int xSize, int ySize, int amount, String neighbourhood, String condition, Double radius) {
         setSize(xSize, ySize);
         set(amount, neighbourhood, condition, radius);
 
         setCellsRandom();
     }
 
-    public DataManager(int xSize, int ySize, String neighbourhood, String condition, Double radius) {
+    public void DM4(int xSize, int ySize, String neighbourhood, String condition, Double radius) {
         setSize(xSize, ySize);
         set(0, neighbourhood, condition, radius);
     }
@@ -71,8 +73,6 @@ public class DataManager {
         for (int x = 0; x < xSize; x++)
             for (int y = 0; y < ySize; y++)
                 cells[x][y] = new Cell(x, y);
-
-        colors = new Colors(xSize * ySize);
     }
 
     private void set(int amount, String neighbourhood, String condition, Double radius) {
@@ -88,14 +88,14 @@ public class DataManager {
         boundaryCondition = new BoundaryCondition();
         this.condition = boundaryCondition.getCondition(condition);
 
-        this.list = new LinkedList<>();
+        this.list = new ArrayList<>();
     }
 
     private int n = 0;
 
-    private void countN(){
-        for (boolean b: this.neighbour)
-            if(b)
+    private void countN() {
+        for (boolean b : this.neighbour)
+            if (b)
                 this.n++;
     }
 
@@ -243,17 +243,8 @@ public class DataManager {
                 id++;
             }
     }
-    // ==========================================================================================================
-    private boolean cell;
 
-    private Cell checkNeighbour(int x, int y) {
-        if (this.cells[x][y].getState() == 1) {
-            return this.cells[x][y];
-        }
-        return null;
-    }
-
-    // method which is one iteration of all code
+    // method which is one iteration of CA algorithm ===================================================================
     public boolean CA() {
         boolean start = false;
         int rand;
@@ -263,7 +254,6 @@ public class DataManager {
         } catch (CloneNotSupportedException e) {
             return false;
         }
-
         if (this.neighbourhood.equals(this.neighbourhood_tab[6])) {
             int x0, y0, x1, y1;
             double minDist, dist;
@@ -403,11 +393,9 @@ public class DataManager {
                 }
             }
         } else {
-            Cell copyCell;
             for (int i = 0; i < this.xSize; i++) {
                 for (int j = 0; j < this.ySize; j++) {
                     if (this.cells[i][j].getState() == 0) {
-                        copyCell = null;
                         if (this.neighbourhood.equals(this.neighbourhood_tab[4])) {
                             rand = random.nextInt(2);
                             setNeighbourHex(rand);
@@ -418,86 +406,64 @@ public class DataManager {
 
                         start = true;
                         this.neighbours.clear();
-                        if (this.neighbour[0]){
+                        if (this.neighbour[0]) {
                             if (i - 1 >= 0 && j - 1 >= 0) {
-                                copyCell = checkNeighbour(i - 1, j - 1);
+                                this.neighbours.addCell(this.cells[i - 1][j - 1]);
                             } else if (this.condition) {
-                                if (i - 1 < 0 && j - 1 < 0)
-                                    copyCell = checkNeighbour(this.xSize - 1, this.ySize - 1);
-                                else if (i - 1 < 0)
-                                    copyCell = checkNeighbour(this.xSize - 1, j - 1);
-                                else
-                                    copyCell = checkNeighbour(i - 1, this.ySize - 1);
+                                this.neighbours.addCell(this.cells[this.xSize - 1][this.ySize - 1]);
                             }
                         }
-                        if(copyCell==null && this.neighbour[1]){
+                        if (this.neighbour[1]) {
                             if (j - 1 >= 0) {
-                                copyCell = checkNeighbour(i, j - 1);
+                                this.neighbours.addCell(this.cells[i][j - 1]);
                             } else if (this.condition) {
-                                copyCell = checkNeighbour(i, this.ySize - 1);
+                                this.neighbours.addCell(this.cells[i][this.ySize - 1]);
                             }
                         }
-                        if(copyCell==null && this.neighbour[2]) {
+                        if (this.neighbour[2]) {
                             if (i + 1 < this.xSize && j - 1 >= 0) {
-                                copyCell = checkNeighbour(i + 1, j - 1);
+                                this.neighbours.addCell(this.cells[i + 1][j - 1]);
                             } else if (this.condition) {
-                                if (i + 1 >= this.xSize && j - 1 < 0)
-                                    copyCell = checkNeighbour(0, this.ySize - 1);
-                                else if (j - 1 < 0)
-                                    copyCell = checkNeighbour(i + 1, this.ySize - 1);
-                                else
-                                    copyCell = checkNeighbour(0, j - 1);
+                                this.neighbours.addCell(this.cells[0][this.ySize - 1]);
                             }
                         }
-                        if(copyCell==null && this.neighbour[3]){
+                        if (this.neighbour[3]) {
                             if (i + 1 < this.xSize) {
-                                copyCell = checkNeighbour(i+1, j);
+                                this.neighbours.addCell(this.cells[i + 1][j]);
                             } else if (this.condition) {
-                                copyCell = checkNeighbour(0, j);
+                                this.neighbours.addCell(this.cells[0][j]);
                             }
                         }
-                        if(copyCell==null && this.neighbour[4]) {
+                        if (this.neighbour[4]) {
                             if (i + 1 < this.xSize && j + 1 < this.ySize) {
-                                copyCell = checkNeighbour(i + 1, j + 1);
+                                this.neighbours.addCell(this.cells[i + 1][j + 1]);
                             } else if (this.condition) {
-                                if (i + 1 >= this.xSize && j + 1 >= this.ySize)
-                                    copyCell = checkNeighbour(0, 0);
-                                else if (i + 1 >= this.xSize)
-                                    copyCell = checkNeighbour(0, j+1);
-                                else
-                                    copyCell = checkNeighbour(i+1, 0);
+                                this.neighbours.addCell(this.cells[0][0]);
                             }
                         }
-                        if(copyCell==null && this.neighbour[5]){
+                        if (this.neighbour[5]) {
                             if (j + 1 < this.ySize) {
-                                copyCell = checkNeighbour(i, j+1);
+                                this.neighbours.addCell(this.cells[i][j + 1]);
                             } else if (this.condition) {
-                                copyCell = checkNeighbour(i, 0);
+                                this.neighbours.addCell(this.cells[i][0]);
                             }
                         }
-                        if(copyCell==null && this.neighbour[6]) {
+                        if (this.neighbour[6]) {
                             if (i - 1 >= 0 && j + 1 < this.ySize) {
-                                copyCell = checkNeighbour(i - 1, j + 1);
+                                this.neighbours.addCell(this.cells[i - 1][j + 1]);
                             } else if (this.condition) {
-                                if (i - 1 < 0 && j + 1 >= this.ySize)
-                                    copyCell = checkNeighbour(this.xSize - 1, 0);
-                                else if (i - 1 < 0)
-                                    copyCell = checkNeighbour(this.xSize - 1, j+1);
-                                else
-                                    copyCell = checkNeighbour(i - 1, 0);
-
+                                this.neighbours.addCell(this.cells[this.xSize - 1][0]);
                             }
                         }
-                        if(copyCell==null && this.neighbour[7]){
+                        if (this.neighbour[7]) {
                             if (i - 1 >= 0) {
-                                copyCell = checkNeighbour(i-1, j);
+                                this.neighbours.addCell(this.cells[i - 1][j]);
                             } else if (this.condition) {
-                                copyCell = checkNeighbour(this.xSize - 1, j);
+                                this.neighbours.addCell(this.cells[this.xSize - 1][j]);
                             }
                         }
-
-                        if (copyCell != null) {
-                            cells_copy[i][j].setCell(copyCell);
+                        if (this.neighbours.size() > 0) {
+                            cells_copy[i][j].setCell(this.neighbours.findMax());
                         }
                     }
                 }
@@ -523,12 +489,6 @@ public class DataManager {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
-    private double minDistance(double dist1, double dist2) {
-        if (dist1 < dist2)
-            return dist1;
-        else return dist2;
-    }
-
     public BufferedImage convertToImage(int width, int height, int cellSize) {
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Color colorFx;
@@ -545,12 +505,10 @@ public class DataManager {
         return bufferedImage;
     }
 
-
-    public List energy_visualization() {
+    public List<Cell> energy_visualization() {
         int id;
         boolean edge;
         if (this.neighbourhood.equals(this.neighbourhood_tab[6])) {
-            int[] xy;
             for (int i = 0; i < this.xSize; i++) {
                 for (int j = 0; j < this.ySize; j++) {
                     edge = false;
@@ -611,12 +569,16 @@ public class DataManager {
                     if (this.neighbourhood.equals(this.neighbourhood_tab[4]) || this.neighbourhood.equals(this.neighbourhood_tab[1])) {
                         this.neighbour = new boolean[]{true, true, true, true, true, true, true, true};
                     }
-
+                    if (this.n == 0)
+                        countN();
+                    this.neighbours.clear();
                     if (this.neighbour[0]) {
                         if (i - 1 >= 0 && j - 1 >= 0) {
+                            this.neighbours.addCell(this.cells[i - 1][j - 1]);
                             if (id != this.cells[i - 1][j - 1].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[this.xSize - 1][this.ySize - 1]);
                             if (id != this.cells[this.xSize - 1][this.ySize - 1].getId()) {
                                 edge = true;
                             }
@@ -624,63 +586,77 @@ public class DataManager {
                     }
                     if (!edge && this.neighbour[1]) {
                         if (j - 1 >= 0) {
+                            this.neighbours.addCell(this.cells[i][j - 1]);
                             if (id != this.cells[i][j - 1].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[i][this.ySize - 1]);
                             if (id != this.cells[i][this.ySize - 1].getId())
                                 edge = true;
                         }
                     }
                     if (!edge && this.neighbour[2]) {
                         if (i + 1 < this.xSize && j - 1 >= 0) {
+                            this.neighbours.addCell(this.cells[i + 1][j - 1]);
                             if (id != this.cells[i + 1][j - 1].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[0][this.ySize - 1]);
                             if (id != this.cells[0][this.ySize - 1].getId())
                                 edge = true;
                         }
                     }
                     if (!edge && this.neighbour[3]) {
                         if (i + 1 < this.xSize) {
+                            this.neighbours.addCell(this.cells[i + 1][j]);
                             if (id != this.cells[i + 1][j].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[0][j]);
                             if (id != this.cells[0][j].getId())
                                 edge = true;
                         }
                     }
                     if (!edge && this.neighbour[4]) {
                         if (i + 1 < this.xSize && j + 1 < this.ySize) {
+                            this.neighbours.addCell(this.cells[i + 1][j + 1]);
                             if (id != this.cells[i + 1][j + 1].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[0][0]);
                             if (id != this.cells[0][0].getId())
                                 edge = true;
                         }
                     }
                     if (!edge && this.neighbour[5]) {
                         if (j + 1 < this.ySize) {
+                            this.neighbours.addCell(this.cells[i][j + 1]);
                             if (id != this.cells[i][j + 1].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[i][0]);
                             if (id != this.cells[i][0].getId())
                                 edge = true;
                         }
                     }
                     if (!edge && this.neighbour[6]) {
                         if (i - 1 >= 0 && j + 1 < this.ySize) {
+                            this.neighbours.addCell(this.cells[i - 1][j + 1]);
                             if (id != this.cells[i - 1][j + 1].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[this.xSize - 1][0]);
                             if (id != this.cells[this.xSize - 1][0].getId())
                                 edge = true;
                         }
                     }
                     if (!edge == this.neighbour[7]) {
                         if (i - 1 >= 0) {
+                            this.neighbours.addCell(this.cells[i - 1][j]);
                             if (id != this.cells[i - 1][j].getId())
                                 edge = true;
                         } else if (this.condition) {
+                            this.neighbours.addCell(this.cells[this.xSize - 1][j]);
                             if (id != this.cells[this.xSize - 1][j].getId())
                                 edge = true;
                         }
@@ -688,19 +664,20 @@ public class DataManager {
 
                     if (edge) {
                         this.list.add(this.cells[i][j]);
+                        this.cells[i][j].setEnergy(this.n - (this.n - this.neighbours.amount(this.cells[i][j].getId())));
+
                     }
                 }
         return this.list;
     }
 
-    public boolean MC(double kT) {
-        boolean start = false;
+    public void MC(double kT) {
         int rand;
         Cell[][] cells_copy;
         try {
             cells_copy = copy();
         } catch (CloneNotSupportedException e) {
-            return false;
+            return;
         }
 
         if (this.neighbourhood.equals(this.neighbourhood_tab[6])) {
@@ -710,7 +687,6 @@ public class DataManager {
             for (int i = 0; i < this.xSize; i++) {
                 for (int j = 0; j < this.ySize; j++) {
                     if (this.cells[i][j].getState() == 0) {
-                        start = true;
                         minDist = Double.MAX_VALUE;
                         x1 = -1;
                         y1 = -1;
@@ -861,7 +837,6 @@ public class DataManager {
                 }
                 if (this.n == 0)
                     countN();
-                start = true;
                 this.neighbours.clear();
                 if (this.neighbour[0]) {
                     if (i - 1 >= 0 && j - 1 >= 0) {
@@ -930,11 +905,218 @@ public class DataManager {
                 }
 
                 if (p == 1) {
-                    System.out.println("true");
                     c.setCell(randC);
                 }
             }
         }
-        return start;
+    }
+
+    //    A = 8.6711E+13, B = 9.412682035, t = 0.2,dt =0.001, xPercent = 0.3;
+    private double A, B, t, dt, xPercent, criticalDensity;
+    private PrintWriter writer;
+    private ArrayList<Double> roList;
+    private boolean nuc = false;
+
+    public void DRXProperties(double A, double B, double t, double dt, double xPercent) {
+        this.A = A;
+        this.B = B;
+        this.t = t;
+        this.dt = dt;
+        this.xPercent = xPercent;
+        roList = new ArrayList<>();
+        countCriticalDensity();
+        try {
+            writer = new PrintWriter("DRX.txt");
+            writer.println("delta Ro - sum uf density");
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
+    }
+
+    public void DRX(int iRo) {
+        double deltaRO, ro1, los, sumOfDensity;
+        int xyCellLos, xLos, yLos;
+
+        sumOfDensity = 0;
+        energy_visualization();
+
+        deltaRO = roList.get(iRo + 1) - roList.get(iRo);
+        writer.print(deltaRO + " - ");
+        ro1 = (deltaRO / (xSize * ySize)) * xPercent;
+
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
+                cells[i][j].density += ro1;
+                deltaRO -= ro1;
+                sumOfDensity += ro1;
+            }
+        }
+
+        while (deltaRO > 0) {
+            los = random.nextDouble();
+            if (deltaRO - ro1 < 0) {
+                ro1 = deltaRO;
+            }
+            if (los > 0.2) {
+                xyCellLos = random.nextInt(this.list.size());
+                this.list.get(xyCellLos).density += ro1;
+            } else {
+                xLos = random.nextInt(xSize);
+                yLos = random.nextInt(ySize);
+                while (cells[xLos][yLos].getEnergy() != 0) {
+                    xLos = random.nextInt(xSize);
+                    yLos = random.nextInt(ySize);
+                }
+                this.cells[xLos][yLos].density += ro1;
+            }
+            deltaRO -= ro1;
+            sumOfDensity += ro1;
+        }
+
+        writer.println(sumOfDensity);
+        DRXNucleation();
+        if (nuc) DRXExpansion();
+    }
+
+    private void DRXExpansion() {
+        int rand;
+        Cell disCell;
+        Cell[][] cells_copy;
+        try {
+            cells_copy = copy();
+        } catch (CloneNotSupportedException e) {
+            return;
+        }
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
+                if (this.neighbourhood.equals(this.neighbourhood_tab[4])) {
+                    rand = random.nextInt(2);
+                    setNeighbourHex(rand);
+                } else if (this.neighbourhood.equals(this.neighbourhood_tab[1])) {
+                    rand = random.nextInt(4);
+                    setNeighbourPent(rand);
+                }
+
+                this.neighbours.clear();
+                if (this.neighbour[0]) {
+                    if (i - 1 >= 0 && j - 1 >= 0) {
+                        this.neighbours.addCellDRX(this.cells[i - 1][j - 1]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[this.xSize - 1][this.ySize - 1]);
+                    }
+                }
+                if (this.neighbour[1]) {
+                    if (j - 1 >= 0) {
+                        this.neighbours.addCellDRX(this.cells[i][j - 1]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[i][this.ySize - 1]);
+                    }
+                }
+                if (this.neighbour[2]) {
+                    if (i + 1 < this.xSize && j - 1 >= 0) {
+                        this.neighbours.addCellDRX(this.cells[i + 1][j - 1]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[0][this.ySize - 1]);
+                    }
+                }
+                if (this.neighbour[3]) {
+                    if (i + 1 < this.xSize) {
+                        this.neighbours.addCellDRX(this.cells[i + 1][j]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[0][j]);
+                    }
+                }
+                if (this.neighbour[4]) {
+                    if (i + 1 < this.xSize && j + 1 < this.ySize) {
+                        this.neighbours.addCellDRX(this.cells[i + 1][j + 1]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[0][0]);
+                    }
+                }
+                if (this.neighbour[5]) {
+                    if (j + 1 < this.ySize) {
+                        this.neighbours.addCellDRX(this.cells[i][j + 1]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[i][0]);
+                    }
+                }
+                if (this.neighbour[6]) {
+                    if (i - 1 >= 0 && j + 1 < this.ySize) {
+                        this.neighbours.addCellDRX(this.cells[i - 1][j + 1]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[this.xSize - 1][0]);
+                    }
+                }
+                if (this.neighbour[7]) {
+                    if (i - 1 >= 0) {
+                        this.neighbours.addCellDRX(this.cells[i - 1][j]);
+                    } else if (this.condition) {
+                        this.neighbours.addCellDRX(this.cells[this.xSize - 1][j]);
+                    }
+                }
+
+                if (this.neighbours.size() > 0) {
+                    disCell = this.neighbours.DRXExp(cells[i][j].density);
+                    if (disCell != null) {
+                        cells_copy[i][j].setCellDRX(disCell);
+                    }
+                }
+            }
+        }
+        this.cells = cells_copy;
+    }
+
+    private void DRXNucleation() {
+//        int s = amount;
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
+                if (cells[i][j].density > criticalDensity && cells[i][j].getEnergy() > 0) {
+                    cells[i][j] = new Cell(cells[i][j], amount, colors.getColor());
+                    amount++;
+                    nuc = true;
+                }
+            }
+        }
+//        System.out.println(amount-s);
+    }
+
+    private void countCriticalDensity() {
+        double sigma0 = 0, b = 8E+10, alfa = 1.9, um = 2.57E-10;
+        boolean findCritical = false;
+        double time = 0, ro, sigma;
+        for (int ti = 0; ti <= (int) (t / dt); ti++) {
+            ro = A / B + (1 - A / B) * Math.exp(-B * time);
+            roList.add(ro);
+            if (!findCritical) {
+                sigma = sigma0 + alfa * um * b * Math.sqrt(ro);
+                if (sigma > 8E+07) {
+                    criticalDensity = ro / (xSize * ySize);
+                    findCritical = true;
+                }
+            }
+            time += dt;
+        }
+    }
+
+    public double minDensity, maxDensity;
+
+    public List<Cell> density_visualization() {
+        minDensity = Double.MAX_VALUE;
+        maxDensity = Double.MIN_VALUE;
+        ArrayList<Cell> list = new ArrayList<>();
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
+                if (cells[i][j].dislocation_state == 1) {
+                    list.add(cells[i][j]);
+                    if (cells[i][j].density > maxDensity) {
+                        maxDensity = cells[i][j].density;
+                    }
+                    if (cells[i][j].density < minDensity) {
+                        minDensity = cells[i][j].density;
+                    }
+                }
+            }
+        }
+        return list;
     }
 }

@@ -11,26 +11,30 @@ public class Colors {
     private final Random random;
 
     // Constructor
-    public Colors(int listSize) {
+    public Colors() {
         random = new Random();
         this.colors = new ArrayList<>();
+        initColors();
+    }
 
-        int x = (int) Math.pow(listSize, (double) 1 / 3);
-        x++;
-        x = 255/x;
-        x++;
-
-        for (int r = 0; r <= 255; r += x)
-            for (int g = 0; g <= 255; g += x)
-                for (int b = 0; b <= 255; b += x)
+    private void initColors(){
+        for (int r = 0; r <= 255; r ++)
+            for (int g = 0; g <= 255; g ++)
+                for (int b = 0; b <= 255; b ++)
                     this.colors.add(Color.rgb(r, g, b));
     }
 
     // method which return random color
     public Color getColor(){
-        int id = random.nextInt(this.colors.size());
-        Color color = this.colors.get(id);
-        this.colors.remove(id);
-        return color;
+        if (colors.size()>0) {
+            int id = random.nextInt(this.colors.size());
+            Color color = this.colors.get(id);
+            this.colors.remove(id);
+            return color;
+        }
+        else {
+            initColors();
+            return getColor();
+        }
     }
 }

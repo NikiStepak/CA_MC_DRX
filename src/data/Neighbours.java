@@ -1,7 +1,5 @@
 package data;
 
-import data.Cell;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -9,7 +7,7 @@ import java.util.Random;
 public class Neighbours {
     private final List<Cell> neighboursCell;
     private final List<Integer> neighbourId;
-    private Random random;
+    private final Random random;
 
     // Constructor
     public Neighbours() {
@@ -30,6 +28,28 @@ public class Neighbours {
                 neighbourId.set(id, value + 1);
             }
         }
+    }
+
+    public void addCellDRX(Cell cell) {
+        neighboursCell.add(cell);
+    }
+
+    public Cell DRXExp(double maxDensity){
+        Cell cell = null;
+        boolean dislocation = false, density = true;
+        for(Cell c: neighboursCell){
+            if(c.dislocation_state==1){
+                dislocation = true;
+                cell = c;
+            }
+            if(c.density>maxDensity){
+                density = false;
+            }
+        }
+        if(dislocation && density) {
+            return cell;
+        }
+        else return null;
     }
 
     // clear list of neighbours
@@ -86,4 +106,6 @@ public class Neighbours {
         int rand = random.nextInt(this.neighboursCell.size());
         return this.neighboursCell.get(rand);
     }
+
+
 }

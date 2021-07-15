@@ -3,7 +3,6 @@ package javafx;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -32,14 +31,13 @@ public class Controller implements Initializable {
     @FXML
     private ComboBox<String> nucleationComboBox, neighbourhoodComboBox, boundaryConditionComboBox;
     @FXML
-    private TextField xSizeField, ySizeField, fileNameField, radiusField, rowField, columnField, amountField, iterField, kTField;
+    private TextField xSizeField, ySizeField, fileNameField, radiusField, rowField, columnField, amountField, iterField, kTField, aField, bField, timeField, dtField, sizePackageField;
     @FXML
     public Button startCAButton, stopCAButton, elementsButton, saveButton, iterationCAButton, startMCButton, stopMCButton;
-    ;
     @FXML
     private Slider xSlider, ySlider;
     @FXML
-    private Label errorLabelCA, errorLabelMC;
+    private Label errorLabelCA, errorLabelMC, endLabel, timeLabel;
     @FXML
     private Canvas canvasPane;
 
@@ -49,11 +47,14 @@ public class Controller implements Initializable {
 
     private int xSize, ySize, rows, columns, amount, cellSize, iter;
     private double radius = 0.0, radiusNu, kT;
-    private String neighbourhood, nucleation, condition, fileName;
-    private String errorStyle = "-fx-border-color: RED;", style = "";
-    private String nucleation_tab[] = {"HOMOGENOUS", "with RADIUS", "RANDOM", "TICKING"};
+    private String neighbourhood;
+    private String nucleation;
+    private String condition;
+    private final String errorStyle = "-fx-border-color: RED;", style = "";
+    private final String[] nucleation_tab = {"HOMOGENOUS", "with RADIUS", "RANDOM", "TICKING"};
+    private double t,dt, ti=0;
 
-    Timeline timelineCA, timelineMC;
+    Timeline timelineCA, timelineMC, timelineDRX;
 
     // Override methods which initialize our controls in window ========================================================
     @Override
@@ -75,36 +76,47 @@ public class Controller implements Initializable {
         saveButton.setDisable(true);
 
         DRXTab.setDisable(true);
+        endLabel.setVisible(false);
         MCTab.setDisable(true);
         errorLabelMC.setVisible(false);
         stopMCButton.setDisable(true);
 
         gc = canvasPane.getGraphicsContext2D();
 
-        timelineCA = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                start = dm.CA();
-                if (!start)
-                    stopCAAction(actionEvent);
-                draw();
-            }
+        timelineCA = new Timeline(new KeyFrame(Duration.millis(50), actionEvent -> {
+            start = dm.CA();
+            if (!start)
+                stopCAAction(actionEvent);
+            draw();
         }));
         timelineCA.setCycleCount(Timeline.INDEFINITE);
         timelineCA.setAutoReverse(false);
 
-        timelineMC = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                dm.MC(kT);
-                iter--;
-                if (iter == 0)
-                    stopMCAction(actionEvent);
-                draw();
-            }
+        timelineMC = new Timeline(new KeyFrame(Duration.millis(100), actionEvent -> {
+            dm.MC(kT);
+            iter--;
+            if (iter == 0)
+                stopMCAction(actionEvent);
+            draw();
         }));
         timelineMC.setCycleCount(Timeline.INDEFINITE);
         timelineMC.setAutoReverse(false);
+
+        timelineDRX = new Timeline(new KeyFrame(Duration.seconds(1), actionEvent -> {
+            if(ti<t) {
+                dm.DRX((int) (ti / dt));
+                draw();
+                ti += dt;
+                timeLabel.setText(String.valueOf(ti));
+            }
+            else {
+                endLabel.setVisible(true);
+                ti = 0;
+                timelineDRX.stop();
+            }
+        }));
+        timelineDRX.setCycleCount(Timeline.INDEFINITE);
+        timelineDRX.setAutoReverse(false);
 
     }
 
@@ -131,13 +143,13 @@ public class Controller implements Initializable {
             MCTab.setDisable(true);
 
             if (nucleation.equals(nucleation_tab[0]))
-                dm = new DataManager(xSize, ySize, rows, columns, neighbourhood, condition, radius);
+                dm.DM1(xSize, ySize, rows, columns, neighbourhood, condition, radius);
             else if (nucleation.equals(nucleation_tab[1]))
-                dm = new DataManager(xSize, ySize, amount, radiusNu, neighbourhood, condition, radius);
+                dm.DM2(xSize, ySize, amount, radiusNu, neighbourhood, condition, radius);
             else if (nucleation.equals(nucleation_tab[2]))
-                dm = new DataManager(xSize, ySize, amount, neighbourhood, condition, radius);
+                dm.DM3(xSize, ySize, amount, neighbourhood, condition, radius);
             else if (nucleation.equals(nucleation_tab[3])) {
-                dm = new DataManager(xSize, ySize, neighbourhood, condition, radius);
+                dm.DM4(xSize, ySize, neighbourhood, condition, radius);
                 tick = true;
             }
 
@@ -158,6 +170,7 @@ public class Controller implements Initializable {
 
     public void startCAAction(ActionEvent actionEvent) {
         tick = false;
+        this.ti = 0;
         elementsButton.setDisable(true);
         iterationCAButton.setDisable(true);
         startCAButton.setDisable(true);
@@ -190,7 +203,7 @@ public class Controller implements Initializable {
     }
 
     public void saveAction(ActionEvent actionEvent) {
-        fileName = fileNameField.getText();
+        String fileName = fileNameField.getText();
         if (fileName.equals(""))
             fileNameField.setStyle(errorStyle);
         else {
@@ -205,25 +218,80 @@ public class Controller implements Initializable {
     }
 
     public void iterationMCAction(ActionEvent actionEvent) {
+        DRXTab.setDisable(false);
         checkMCProperties(true);
+        this.ti = 0;
         if (!error) {
             dm.MC(0.1);
             draw();
         }
     }
 
+    boolean isStart = false;
+    public void drxAction(ActionEvent actionEvent){
+        if(this.ti==0) {
+            this.t = Double.parseDouble(timeField.getText());
+            this.dt = Double.parseDouble(dtField.getText());
+            dm.DRXProperties(Double.parseDouble(aField.getText()), Double.parseDouble(bField.getText()), t, dt, Double.parseDouble(sizePackageField.getText()));
+            endLabel.setVisible(false);
+        }
+        isStart = !isStart;
+        if(isStart){
+            timelineDRX.play();
+        }
+        else
+            timelineDRX.stop();
+    }
+
     public void energyAction(ActionEvent actionEvent) {
         List<Cell> list = dm.energy_visualization();
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, xSize * cellSize, ySize * cellSize);
-        gc.setFill(Color.AQUA);
+
         for (Cell c : list) {
+            switch (c.getEnergy()) {
+                case 1 -> gc.setFill(Color.NAVY);
+                case 2 -> gc.setFill(Color.MEDIUMBLUE);
+                case 3 -> gc.setFill(Color.ROYALBLUE);
+                case 4 -> gc.setFill(Color.DODGERBLUE);
+                case 5 -> gc.setFill(Color.DEEPSKYBLUE);
+                case 6 -> gc.setFill(Color.AQUA);
+                case 7 -> gc.setFill(Color.SKYBLUE);
+                case 8 -> gc.setFill(Color.LIGHTCYAN);
+            }
+            gc.fillRect(c.getX() * cellSize, c.getY() * cellSize, cellSize, cellSize);
+        }
+    }
+
+    public void densityAction(ActionEvent actionEvent) {
+        List<Cell> list = dm.density_visualization();
+        gc.setFill(Color.rgb(152,102,0));
+        gc.fillRect(0, 0, xSize * cellSize, ySize * cellSize);
+        double d = (dm.maxDensity-dm.minDensity)/ 11;
+
+        for (Cell c : list) {
+            switch ((int) (c.density / d)) {
+                case 0 -> gc.setFill(Color.PALEGREEN);
+                case 1 -> gc.setFill(Color.LIGHTGREEN);
+                case 2 -> gc.setFill(Color.YELLOWGREEN);
+                case 3 -> gc.setFill(Color.GREENYELLOW);
+                case 4 -> gc.setFill(Color.CHARTREUSE);
+                case 5 -> gc.setFill(Color.LAWNGREEN);
+                case 6 -> gc.setFill(Color.SPRINGGREEN);
+                case 7 -> gc.setFill(Color.LIME);
+                case 8 -> gc.setFill(Color.LIMEGREEN);
+                case 9 -> gc.setFill(Color.FORESTGREEN);
+                case 10 -> gc.setFill(Color.GREEN);
+                case 11 -> gc.setFill(Color.DARKGREEN);
+            }
             gc.fillRect(c.getX() * cellSize, c.getY() * cellSize, cellSize, cellSize);
         }
     }
 
     public void startMCAction(ActionEvent actionEvent) {
+        DRXTab.setDisable(false);
         checkMCProperties(false);
+        this.ti = 0;
         if (!error) {
             startMCButton.setDisable(true);
             stopMCButton.setDisable(false);
@@ -246,6 +314,12 @@ public class Controller implements Initializable {
             dm.setCellTick(x, y);
             gc.setFill(dm.cells[x][y].getColorRGB());
             gc.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        }
+        else {
+            int x, y;
+            x = (int) (mouseEvent.getX() / cellSize);
+            y = (int) (mouseEvent.getY() / cellSize);
+            System.out.println(dm.cells[x][y].toString());
         }
     }
 
@@ -519,9 +593,6 @@ public class Controller implements Initializable {
         }
 
 
-        if (error)
-            errorLabelMC.setVisible(true);
-        else
-            errorLabelMC.setVisible(false);
+        errorLabelMC.setVisible(error);
     }
 }
