@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<SplitPane fx:id="mmm" dividerPositions="0.7" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.Controller">
+    <items>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="750.0" prefWidth="750.0" style="-fx-background-color: Grey;">
+            <children>
+                <ScrollPane fx:id="mainScrollPane" layoutX="179.0" layoutY="184.0" prefHeight="747.0" prefWidth="732.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <content>
+                        <Canvas fx:id="canvasPane" height="745.0" onMousePressed="#canvasPressed" width="730.0" />
+                    </content>
+                </ScrollPane>
+            </children></AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="750.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
+            <children>
+                <TabPane layoutX="-20.0" layoutY="120.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                        <Tab text="CA">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="750.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
+                                    <children>
+                                        <Label layoutX="66.0" layoutY="15.0" text="SIZE OF SPACE" AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="103.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField alignment="CENTER" layoutX="13.0" layoutY="40.0" onKeyTyped="#xSizeType" prefHeight="25.0" prefWidth="60.0" promptText="xSize" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="221.0" fx:id="xSizeField">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font></TextField>
+                                        <Slider layoutX="71.0" layoutY="45.0" majorTickUnit="250.0" max="1000.0" min="1.0" onMouseDragged="#xSizeDragged" onMousePressed="#xSizeDragged" prefHeight="14.0" prefWidth="150.0" showTickLabels="true" AnchorPane.rightAnchor="30.0" fx:id="xSlider" />
+                                        <TextField fx:id="ySizeField" alignment="CENTER" layoutX="14.0" layoutY="75.0" onKeyTyped="#ySizeTyped" prefHeight="25.0" prefWidth="60.0" promptText="ySize" AnchorPane.leftAnchor="30.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font></TextField>
+                                        <Slider fx:id="ySlider" layoutX="72.0" layoutY="80.0" majorTickUnit="250.0" max="1000.0" min="1.0" onMouseDragged="#ySizeDragged" onMousePressed="#ySizeDragged" prefWidth="150.0" showTickLabels="true" AnchorPane.rightAnchor="30.0" />
+                                        <Separator layoutX="20.0" layoutY="125.0" prefWidth="250.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Label layoutX="71.0" layoutY="135.0" text="NUCLEATION" AnchorPane.leftAnchor="108.0" AnchorPane.rightAnchor="108.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="nucleationComboBox" editable="true" layoutX="32.0" layoutY="165.0" onAction="#nucleationAction" promptText="SELECT" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" />
+                                        <TextField fx:id="rowField" alignment="CENTER" layoutX="20.0" layoutY="205.0" onKeyTyped="#rowTyped" prefHeight="25.0" prefWidth="80.0" AnchorPane.leftAnchor="60.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font></TextField>
+                                        <TextField fx:id="columnField" alignment="CENTER" layoutX="150.0" layoutY="205.0" onKeyTyped="#columnTyped" prefHeight="25.0" prefWidth="80.0" AnchorPane.rightAnchor="60.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font>
+                                        </TextField>
+                                        <TextField fx:id="amountField" alignment="CENTER" layoutX="73.0" layoutY="205.0" onKeyTyped="#amountTyped" prefHeight="25.0" prefWidth="80.0" promptText="AMOUNT" AnchorPane.leftAnchor="108.0" AnchorPane.rightAnchor="108.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font>
+                                        </TextField>
+                                        <Separator layoutX="25.0" layoutY="240.0" prefWidth="250.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Label layoutX="53.0" layoutY="255.0" text="NEIGHBOURHOOD" AnchorPane.leftAnchor="90.5" AnchorPane.rightAnchor="90.5">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="neighbourhoodComboBox" editable="true" layoutX="32.0" layoutY="285.0" onAction="#neighbourhoodAction" promptText="SELECT" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" />
+                                        <TextField fx:id="radiusField" alignment="CENTER" layoutX="37.0" layoutY="325.0" onKeyTyped="#radiusTyped" prefHeight="25.0" prefWidth="80.0" promptText="RADIUS" AnchorPane.leftAnchor="108.0" AnchorPane.rightAnchor="108.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font></TextField>
+                                        <Separator layoutX="25.0" layoutY="360.0" prefWidth="250.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Label layoutX="35.0" layoutY="375.0" text="BOUNDARY CONDITION" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="72.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="boundaryConditionComboBox" editable="true" layoutX="32.0" layoutY="405.0" onAction="#boundaryConditionAction" promptText="SELECT" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" />
+                                        <Separator layoutX="25.0" layoutY="440.0" prefWidth="250.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Button fx:id="elementsButton" layoutX="24.0" layoutY="455.0" mnemonicParsing="false" onAction="#elementsAction" text="SET ALL ELEMENTS" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Label fx:id="errorLabel" layoutX="13.0" layoutY="495.0" text="PLEASE COMPLETE THIS FORM CORRECTLY" textAlignment="CENTER" textFill="RED" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Separator layoutX="25.0" layoutY="520.0" prefWidth="250.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Button fx:id="iterationButton" layoutX="113.0" layoutY="535.0" mnemonicParsing="false" onAction="#iterationAction" text="ITERATION" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font></Button>
+                                        <Button fx:id="startButton" layoutX="25.0" layoutY="575.0" mnemonicParsing="false" onAction="#startAction" prefWidth="100.0" text="START" AnchorPane.leftAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Button fx:id="stopButton" layoutX="177.0" layoutY="575.0" mnemonicParsing="false" onAction="#stopAction" prefWidth="100.0" text="STOP" AnchorPane.rightAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Separator layoutX="56.0" layoutY="615.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="MONTE CARLO">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <TextField alignment="CENTER" layoutX="53.0" layoutY="45.0" prefHeight="25.0" promptText="NUMBER OF ITERATIONS" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="70.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font>
+                                        </TextField>
+                                        <TextField alignment="CENTER" layoutX="46.0" layoutY="85.0" prefHeight="25.0" prefWidth="85.0" promptText="kT" AnchorPane.leftAnchor="85.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font>
+                                        </TextField>
+                                        <Separator layoutX="36.0" layoutY="125.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Label layoutX="93.0" layoutY="15.0" text="PARAMETERS" textAlignment="CENTER" AnchorPane.leftAnchor="106.0" AnchorPane.rightAnchor="106.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Button layoutX="106.0" layoutY="195.0" mnemonicParsing="false" text="ITERATION" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Button layoutX="95.0" layoutY="235.0" mnemonicParsing="false" prefWidth="100.0" text="START" AnchorPane.leftAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Button layoutX="80.0" layoutY="235.0" mnemonicParsing="false" prefWidth="100.0" text="STOP" AnchorPane.rightAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Separator layoutX="56.0" layoutY="180.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Label layoutX="177.0" layoutY="90.0" text="[0.1 ; 6]" AnchorPane.rightAnchor="85.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Button alignment="CENTER" layoutX="59.0" layoutY="140.0" mnemonicParsing="false" text="ENERGY VISUALIZATION " AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Separator layoutX="45.0" layoutY="275.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                    </children></AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+                <Button fx:id="saveButton" layoutX="46.0" layoutY="700.0" mnemonicParsing="false" onAction="#saveAction" prefWidth="100.0" text="SAVE" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0">
+                    <font>
+                        <Font name="Times New Roman Bold" size="14.0" />
+                    </font>
+                </Button>
+                <TextField fx:id="fileNameField" alignment="CENTER" layoutX="65.0" layoutY="660.0" onKeyTyped="#fileNameTyped" prefHeight="25.0" promptText="NAME OF FILE" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0">
+                    <font>
+                        <Font name="Times New Roman Bold" size="12.0" />
+                    </font>
+                </TextField>
+            </children></AnchorPane>
+    </items>
+</SplitPane>
