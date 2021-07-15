@@ -4,15 +4,18 @@ import data.Cell;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class Neighbours {
     private final List<Cell> neighboursCell;
     private final List<Integer> neighbourId;
+    private Random random;
 
     // Constructor
     public Neighbours() {
         this.neighboursCell = new LinkedList<>();
         this.neighbourId = new LinkedList<>();
+        random = new Random();
     }
 
     // add neighbour if its state equal 1 - one id = one neighbour
@@ -21,7 +24,7 @@ public class Neighbours {
             int id = check(cell.getId());
             if (id == -1) {
                 neighboursCell.add(cell);
-                neighbourId.add(0);
+                neighbourId.add(1);
             } else {
                 int value = neighbourId.get(id);
                 neighbourId.set(id, value + 1);
@@ -67,5 +70,20 @@ public class Neighbours {
             }
         }
         return c;
+    }
+
+    // return amount of cell with this id
+    public int amount(int id){
+        int i = check(id);
+        if(i == -1)
+            return 0;
+        else
+            return neighbourId.get(i);
+    }
+
+    // return random neighbour (Cell)
+    public Cell randomCell(){
+        int rand = random.nextInt(this.neighboursCell.size());
+        return this.neighboursCell.get(rand);
     }
 }

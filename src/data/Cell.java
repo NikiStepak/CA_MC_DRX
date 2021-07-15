@@ -9,12 +9,15 @@ public class Cell implements Cloneable{
     private int state;
     private Color colorRGB;
     private int energy;
+    private int x,y;
 
     // Constructor
-    public Cell() {
+    public Cell(int x, int y) {
         this.id = -1;
         this.state = 0;
         this.colorRGB = Color.WHITE;
+        this.x = x;
+        this.y = y;
     }
 
     // Getters =============================================================
@@ -29,7 +32,24 @@ public class Cell implements Cloneable{
     public int getId() {
         return id;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
     // =====================================================================
+
+    // Setter
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
 
     // set all fields of Cell
     public void setCell(int id, Color color){

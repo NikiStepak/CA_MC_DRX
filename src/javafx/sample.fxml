@@ -28,7 +28,7 @@
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Label>
-                                        <TextField alignment="CENTER" layoutX="13.0" layoutY="40.0" onKeyTyped="#xSizeType" prefHeight="25.0" prefWidth="60.0" promptText="xSize" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="221.0" fx:id="xSizeField">
+                                        <TextField alignment="CENTER" layoutX="13.0" layoutY="40.0" onKeyTyped="#xSizeTyped" prefHeight="25.0" prefWidth="60.0" promptText="xSize" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="221.0" fx:id="xSizeField">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="12.0" />
                                             </font></TextField>
@@ -83,22 +83,22 @@
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Button>
-                                        <Label fx:id="errorLabel" layoutX="13.0" layoutY="495.0" text="PLEASE COMPLETE THIS FORM CORRECTLY" textAlignment="CENTER" textFill="RED" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                                        <Label fx:id="errorLabelCA" layoutX="13.0" layoutY="495.0" text="PLEASE COMPLETE THIS FORM CORRECTLY" textAlignment="CENTER" textFill="RED" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="12.0" />
                                             </font>
                                         </Label>
                                         <Separator layoutX="25.0" layoutY="520.0" prefWidth="250.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                                        <Button fx:id="iterationButton" layoutX="113.0" layoutY="535.0" mnemonicParsing="false" onAction="#iterationAction" text="ITERATION" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                        <Button fx:id="iterationCAButton" layoutX="113.0" layoutY="535.0" mnemonicParsing="false" onAction="#iterationCAAction" text="ITERATION" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font></Button>
-                                        <Button fx:id="startButton" layoutX="25.0" layoutY="575.0" mnemonicParsing="false" onAction="#startAction" prefWidth="100.0" text="START" AnchorPane.leftAnchor="45.0">
+                                        <Button fx:id="startCAButton" layoutX="25.0" layoutY="575.0" mnemonicParsing="false" onAction="#startCAAction" prefWidth="100.0" text="START" AnchorPane.leftAnchor="45.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Button>
-                                        <Button fx:id="stopButton" layoutX="177.0" layoutY="575.0" mnemonicParsing="false" onAction="#stopAction" prefWidth="100.0" text="STOP" AnchorPane.rightAnchor="45.0">
+                                        <Button fx:id="stopCAButton" layoutX="177.0" layoutY="575.0" mnemonicParsing="false" onAction="#stopCAAction" prefWidth="100.0" text="STOP" AnchorPane.rightAnchor="45.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
@@ -108,54 +108,77 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab text="MONTE CARLO">
+                        <Tab fx:id="MCTab" text="MONTE CARLO">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                        <TextField alignment="CENTER" layoutX="53.0" layoutY="45.0" prefHeight="25.0" promptText="NUMBER OF ITERATIONS" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="70.0">
+                                        <TextField fx:id="iterField" alignment="CENTER" layoutX="53.0" layoutY="45.0" onKeyTyped="#iterTyped" prefHeight="25.0" promptText="NUMBER OF ITERATIONS" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="70.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="12.0" />
                                             </font>
                                         </TextField>
-                                        <TextField alignment="CENTER" layoutX="46.0" layoutY="85.0" prefHeight="25.0" prefWidth="85.0" promptText="kT" AnchorPane.leftAnchor="85.0">
+                                        <TextField fx:id="kTField" alignment="CENTER" layoutX="46.0" layoutY="85.0" onKeyTyped="#kTTyped" prefHeight="25.0" prefWidth="85.0" promptText="kT" AnchorPane.leftAnchor="85.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="12.0" />
                                             </font>
                                         </TextField>
-                                        <Separator layoutX="36.0" layoutY="125.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Label fx:id="errorLabelMC" layoutX="13.0" layoutY="125.0" text="PLEASE COMPLETE THIS FORM CORRECTLY" textAlignment="CENTER" textFill="RED" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Separator layoutX="36.0" layoutY="155.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                         <Label layoutX="93.0" layoutY="15.0" text="PARAMETERS" textAlignment="CENTER" AnchorPane.leftAnchor="106.0" AnchorPane.rightAnchor="106.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Label>
-                                        <Button layoutX="106.0" layoutY="195.0" mnemonicParsing="false" text="ITERATION" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="106.0" layoutY="200.0" mnemonicParsing="false" onAction="#iterationMCAction" text="ITERATION" textAlignment="CENTER" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Button>
-                                        <Button layoutX="95.0" layoutY="235.0" mnemonicParsing="false" prefWidth="100.0" text="START" AnchorPane.leftAnchor="45.0">
+                                        <Button fx:id="startMCButton" alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="240.0" mnemonicParsing="false" onAction="#startMCAction" prefWidth="100.0" text="START" textAlignment="CENTER" AnchorPane.leftAnchor="45.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Button>
-                                        <Button layoutX="80.0" layoutY="235.0" mnemonicParsing="false" prefWidth="100.0" text="STOP" AnchorPane.rightAnchor="45.0">
+                                        <Button fx:id="stopMCButton" layoutX="80.0" layoutY="240.0" mnemonicParsing="false" onAction="#stopMCAction" prefWidth="100.0" text="STOP" AnchorPane.rightAnchor="45.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Button>
-                                        <Separator layoutX="56.0" layoutY="180.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Separator layoutX="56.0" layoutY="280.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                         <Label layoutX="177.0" layoutY="90.0" text="[0.1 ; 6]" AnchorPane.rightAnchor="85.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <Button alignment="CENTER" layoutX="59.0" layoutY="140.0" mnemonicParsing="false" text="ENERGY VISUALIZATION " AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                        <Button alignment="CENTER" layoutX="59.0" layoutY="295.0" mnemonicParsing="false" onAction="#energyAction" text="ENERGY VISUALIZATION " AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
                                             <font>
                                                 <Font name="Times New Roman Bold" size="14.0" />
                                             </font>
                                         </Button>
-                                        <Separator layoutX="45.0" layoutY="275.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Separator layoutX="45.0" layoutY="375.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                        <Button alignment="CENTER" layoutX="102.0" layoutY="335.0" mnemonicParsing="false" onAction="#iterationCAAction" text="CA VISUALIZATION" textAlignment="CENTER" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="45.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Label alignment="CENTER" layoutX="106.0" layoutY="170.0" text="MC VISUALIZATION" textAlignment="CENTER" AnchorPane.leftAnchor="85.0" AnchorPane.rightAnchor="85.0">
+                                            <font>
+                                                <Font name="Times New Roman Bold" size="14.0" />
+                                            </font>
+                                        </Label>
                                     </children></AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab fx:id="DRXTab" text="DRX">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                    </children>
+                                </AnchorPane>
                             </content>
                         </Tab>
                     </tabs>
