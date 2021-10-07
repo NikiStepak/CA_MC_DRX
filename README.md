@@ -1,6 +1,6 @@
 # CA_MC_DRX
 
-To create this project we use Java 16.
+To create this project I use Java 16.
 
 ## Description
 
@@ -22,7 +22,7 @@ Put this files in a separate folder.
 
 And if you use IntelliJ you should create a new project in this folder. 
 
-Then you should open Run > Edit Configurations... > Modify options > Add VM options and add in created field (VM options) this:
+Then you should open Run > Edit Configurations... > Modify options > Add VM options and copy to created field (VM options) this text:
 
 --module-path \javafx-sdk-16\lib (here is adress of your javafx sdk folder)
 
